@@ -23,7 +23,7 @@ const ProductCard: React.FC<Props> = ({ product }) => {
     >
       <Card className="group overflow-hidden transition-shadow hover:shadow-lg">
         <div className="relative aspect-square overflow-hidden bg-secondary">
-          <img src={product.image} alt={product.name} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+          <img loading="lazy" width={768} height={768} src={product.image} alt={product.name} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
           {product.allergens.length > 0 && (
             <Badge variant="destructive" className="absolute left-2 top-2 gap-1 text-[10px]">
               <AlertTriangle className="h-3 w-3" /> Аллерген
@@ -55,7 +55,7 @@ const ProductCard: React.FC<Props> = ({ product }) => {
                 </span>
               )}
             </div>
-            <Button size="icon" className="h-8 w-8" onClick={() => addItem(product)}>
+            <Button size="icon" className="h-8 w-8" aria-label={`${product.name} себетке қосу`} onClick={() => addItem(product)}>
               <ShoppingCart className="h-4 w-4" />
             </Button>
           </div>
