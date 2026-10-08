@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Search, User, Menu, Leaf } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { categories } from '@/data/mock-data';
 
 const Header: React.FC = () => {
+  const navigate = useNavigate();
   const { totalItems } = useCart();
   const [search, setSearch] = React.useState('');
 
@@ -49,7 +50,7 @@ const Header: React.FC = () => {
         </Link>
 
         {/* Search */}
-        <div className="relative mx-4 hidden flex-1 md:flex">
+        <form onSubmit={e=>{e.preventDefault();navigate(`/catalog?q=${encodeURIComponent(search)}`);}} className="relative mx-4 hidden flex-1 md:flex">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Тауар іздеу..."
@@ -57,15 +58,16 @@ const Header: React.FC = () => {
             onChange={e => setSearch(e.target.value)}
             className="pl-10"
           />
-        </div>
+        </form>
 
         {/* Actions */}
         <div className="ml-auto flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="md:hidden">
+          <Button aria-label="Тауар іздеу" onClick={()=>navigate('/catalog')} variant="ghost" size="icon" className="md:hidden">
             <Search className="h-5 w-5" />
           </Button>
+          <Button asChild variant="ghost" className="hidden sm:inline-flex"><Link to="/orders">Тапсырыстарым</Link></Button>
           <Link to="/cart">
-            <Button variant="ghost" size="icon" className="relative">
+            <Button variant="ghost" size="icon" aria-label="Себет" className="relative">
               <ShoppingCart className="h-5 w-5" />
               {totalItems > 0 && (
                 <Badge className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full p-0 text-[10px]">
@@ -75,7 +77,7 @@ const Header: React.FC = () => {
             </Button>
           </Link>
           <Link to="/profile">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" aria-label="Жеке кабинет">
               <User className="h-5 w-5" />
             </Button>
           </Link>
