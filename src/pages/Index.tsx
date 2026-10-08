@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import CategoryGrid from '@/components/CategoryGrid';
 import BundleSets from '@/components/BundleSets';
@@ -34,15 +35,11 @@ const Index: React.FC = () => {
             </h1>
             <p className="mb-6 text-lg text-muted-foreground font-body">
               Әр тауардың құрамы, аллерген ескертуі және жарамдылық мерзімі.
-              Отбасыңыз үшін қауіпсіз тамақтануды біз қамтамасыз етеміз!
+              Қаптамадағы құрам мен аллерген ақпаратын әрдайым тексеріңіз.
             </p>
             <div className="flex flex-wrap gap-3">
-              <Button size="lg" className="gap-2 text-base">
-                <ShieldCheck className="h-5 w-5" /> Аллергия фильтрі
-              </Button>
-              <Button size="lg" variant="outline" className="gap-2 text-base">
-                Каталогты ашу
-              </Button>
+              <Button asChild size="lg" className="gap-2 text-base"><Link to="/catalog?filter=allergy"><ShieldCheck className="h-5 w-5" /> Аллергия сүзгісі</Link></Button>
+              <Button asChild size="lg" variant="outline" className="gap-2 text-base"><Link to="/catalog">Каталогты ашу</Link></Button>
             </div>
           </motion.div>
         </div>
@@ -83,7 +80,7 @@ const Index: React.FC = () => {
         <section className="py-8">
           <h2 className="mb-6 text-2xl font-bold">Танымал тауарлар</h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {products.slice(0, 10).map(product => (
+            {products.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

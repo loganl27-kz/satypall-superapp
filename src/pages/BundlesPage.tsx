@@ -9,17 +9,12 @@ import { useCart } from '@/context/CartContext';
 import { motion } from 'framer-motion';
 
 const BundlesPage: React.FC = () => {
-  const { addItem } = useCart();
+  const { addBundle } = useCart();
 
   const handleAddBundle = (bundleId: string) => {
     const bundle = bundleSets.find(b => b.id === bundleId);
     if (!bundle) return;
-    bundle.products.forEach(bp => {
-      const prod = products.find(p => p.id === bp.productId);
-      if (prod) {
-        for (let i = 0; i < bp.quantity; i++) addItem(prod);
-      }
-    });
+    addBundle(bundle);
   };
 
   return (
@@ -38,7 +33,7 @@ const BundlesPage: React.FC = () => {
           {bundleSets.map((bundle, i) => {
             const bundleProducts = bundle.products.map(bp => ({
               ...bp,
-              product: products.find(p => p.id === bp.productId)!,
+              product: products.find(p => p.id === bp.productId),
             })).filter(bp => bp.product);
 
             return (
@@ -49,7 +44,8 @@ const BundlesPage: React.FC = () => {
                 transition={{ delay: i * 0.1 }}
               >
                 <Card className="border-2 border-primary/20">
-                  <CardContent className="p-5">
+                  <img src={bundle.image} alt={bundle.name} loading="lazy" width={768} height={768} className="aspect-[4/3] w-full object-contain bg-card" />
+              <CardContent className="p-5">
                     <div className="mb-3 flex items-start justify-between">
                       <h3 className="text-lg font-bold">{bundle.name}</h3>
                       {bundle.allergenFree && (
@@ -64,7 +60,7 @@ const BundlesPage: React.FC = () => {
                       <h4 className="text-sm font-semibold">Құрамындағы тауарлар:</h4>
                       {bundleProducts.map(bp => (
                         <div key={bp.productId} className="flex items-center justify-between text-sm">
-                          <span>{bp.product.name}</span>
+                          <span>{bp.product?.name}</span>
                           <span className="text-muted-foreground">×{bp.quantity}</span>
                         </div>
                       ))}

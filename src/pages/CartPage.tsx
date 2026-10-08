@@ -49,10 +49,10 @@ const CartPage: React.FC = () => {
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="space-y-3 lg:col-span-2">
             {items.map(item => (
-              <div key={item.product.id} className="flex items-center gap-4 rounded-lg border bg-card p-4">
+              <div key={item.product.id} className="flex flex-wrap items-center gap-3 rounded-lg border bg-card p-4">
                 <img src={item.product.image} alt={item.product.name} className="h-16 w-16 rounded-lg bg-secondary object-cover" />
                 <div className="flex-1">
-                  <Link to={`/product/${item.product.id}`} className="font-semibold hover:text-primary">
+                  <Link to={item.product.categoryId === 'bundle' ? '/bundles' : `/product/${item.product.id}`} className="font-semibold hover:text-primary">
                     {item.product.name}
                   </Link>
                   <p className="text-xs text-muted-foreground">{item.product.unit}</p>
@@ -98,9 +98,7 @@ const CartPage: React.FC = () => {
               <span>Барлығы</span>
               <span className="text-primary">{totalPrice.toLocaleString()} ₸</span>
             </div>
-            <Button className="w-full gap-2 text-base" size="lg">
-              Kaspi арқылы төлеу
-            </Button>
+            <Button asChild className="w-full gap-2 text-base" size="lg"><Link to="/checkout">Тапсырыс беру</Link></Button>
             <Button variant="ghost" className="mt-2 w-full text-sm text-destructive" onClick={clearCart}>
               Себетті тазалау
             </Button>

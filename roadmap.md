@@ -1,0 +1,5 @@
+- [x] Product and bundle photography
+- [x] Checkout with validated contact details and payment choice
+- [x] Private persistent order history and sign-in
+- [x] Working search, allergen filter and navigation
+- [x] Verify ordering, prices, image loading and privacy

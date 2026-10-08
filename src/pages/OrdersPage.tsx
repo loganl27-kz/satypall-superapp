@@ -1,0 +1,18 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import Header from '@/components/Header';
+import AuthForm from '@/components/AuthForm';
+import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
+import { Button } from '@/components/ui/button';
+import { deliveryLabels } from '@/lib/checkout';
+import { productImages,bundleImages } from '@/data/images';
+import { z } from 'zod';
+
+const lineSchema=z.array(z.object({id:z.string(),name:z.string(),price:z.number(),quantity:z.number()}));
+export default function OrdersPage() {
+  const {user,loading}=useAuth();const [orders,setOrders]=useState<Tables<'orders'>[]>([]);const [busy,setBusy]=useState(true);const [error,setError]=useState('');const [reload,setReload]=useState(0);
+  useEffect(()=>{let active=true;if(!user){setOrders([]);setBusy(false);return;}setBusy(true);setError('');supabase.from('orders').select('*').eq('user_id',user.id).order('created_at',{ascending:false}).then(({data,error})=>{if(!active)return;setOrders(data??[]);setError(error?'Тарих жүктелмеді. Қайта көріңіз.':'');setBusy(false);});return()=>{active=false;};},[user,reload]);
+  return <div className="min-h-screen bg-background"><Header/><main className="container max-w-4xl py-8"><h1 className="mb-7 text-3xl font-bold">Тапсырыстар тарихы</h1>{loading?<p>Күтіңіз…</p>:!user?<AuthForm/>:busy?<p>Тапсырыстар жүктелуде…</p>:error?<div role="alert"><p>{error}</p><Button onClick={()=>setReload(v=>v+1)}>Қайта көру</Button></div>:!orders.length?<div className="py-12 text-center"><p className="mb-5 text-muted-foreground">Әзірге тапсырыстарыңыз жоқ.</p><Button asChild><Link to="/catalog">Тауар таңдау</Link></Button></div>:<div className="space-y-6">{orders.map(o=>{const parsed=lineSchema.safeParse(o.items);return <article key={o.id} className="rounded-lg border bg-card p-5"><div className="mb-4 flex flex-wrap justify-between gap-2"><div><h2 className="text-lg font-bold">№ {o.id.slice(0,8).toUpperCase()}</h2><p className="text-sm text-muted-foreground">{new Date(o.created_at).toLocaleString('kk-KZ')}</p></div><span className="font-semibold text-primary">{o.status==='received'?'Қабылданды':o.status==='delivered'?'Жеткізілді':o.status==='cancelled'?'Бас тартылды':o.status}</span></div>{parsed.success&&parsed.data.map((line,i)=><div key={i} className="flex items-center gap-3 border-b py-2"><img src={productImages[line.id]??bundleImages[line.id]} alt={line.name} loading="lazy" width={48} height={48} className="h-12 w-12 object-contain"/><p className="flex-1 text-sm">{line.name} × {line.quantity}</p><p className="text-sm font-semibold">{(line.price*line.quantity).toLocaleString('kk-KZ')} ₸</p></div>)}<dl className="mt-4 grid gap-2 text-sm"><div><dt className="inline text-muted-foreground">Мекенжай: </dt><dd className="inline">{o.address}</dd></div><div><dt className="inline text-muted-foreground">Жеткізу: </dt><dd className="inline">{deliveryLabels[o.delivery_method]}</dd></div><div><dt className="inline text-muted-foreground">Төлем: </dt><dd className="inline">{o.payment_method==='kaspi'?'Kaspi':'Қолма-қол'} · {o.payment_status==='paid'?'Төленді':'Төлем күтілуде'}</dd></div></dl><p className="mt-4 text-right text-xl font-bold text-primary">{o.total.toLocaleString('kk-KZ')} ₸</p></article>;})}</div>}</main></div>;
+}

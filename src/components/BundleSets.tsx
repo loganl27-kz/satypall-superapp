@@ -9,17 +9,12 @@ import { useCart } from '@/context/CartContext';
 import { motion } from 'framer-motion';
 
 const BundleSets: React.FC = () => {
-  const { addItem } = useCart();
+  const { addBundle } = useCart();
 
   const handleAddBundle = (bundleId: string) => {
     const bundle = bundleSets.find(b => b.id === bundleId);
     if (!bundle) return;
-    bundle.products.forEach(bp => {
-      const prod = products.find(p => p.id === bp.productId);
-      if (prod) {
-        for (let i = 0; i < bp.quantity; i++) addItem(prod);
-      }
-    });
+    addBundle(bundle);
   };
 
   return (
@@ -42,6 +37,7 @@ const BundleSets: React.FC = () => {
                   <ShieldCheck className="h-3 w-3" /> Аллергенсіз
                 </Badge>
               )}
+              <img src={bundle.image} alt={bundle.name} loading="lazy" width={768} height={768} className="aspect-[4/3] w-full object-contain bg-card" />
               <CardContent className="p-5">
                 <h3 className="mb-2 text-lg font-bold">{bundle.name}</h3>
                 <p className="mb-4 text-sm text-muted-foreground">{bundle.description}</p>
