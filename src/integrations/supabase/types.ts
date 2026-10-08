@@ -14,13 +14,92 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      catalog_items: {
+        Row: {
+          available: boolean
+          id: string
+          name: string
+          price: number
+        }
+        Insert: {
+          available?: boolean
+          id: string
+          name: string
+          price: number
+        }
+        Update: {
+          available?: boolean
+          id?: string
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          address: string
+          created_at: string
+          customer_name: string
+          delivery_method: string
+          id: string
+          items: Json
+          payment_method: string
+          payment_status: string
+          phone: string
+          request_id: string
+          status: string
+          total: number
+          user_id: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          customer_name: string
+          delivery_method: string
+          id?: string
+          items: Json
+          payment_method: string
+          payment_status?: string
+          phone: string
+          request_id: string
+          status?: string
+          total: number
+          user_id: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          customer_name?: string
+          delivery_method?: string
+          id?: string
+          items?: Json
+          payment_method?: string
+          payment_status?: string
+          phone?: string
+          request_id?: string
+          status?: string
+          total?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      place_order: {
+        Args: {
+          p_address: string
+          p_delivery: string
+          p_items: Json
+          p_name: string
+          p_payment: string
+          p_phone: string
+          p_request_id: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
